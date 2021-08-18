@@ -1,12 +1,24 @@
 <template>
   <div>
-    <h1>Home</h1>
+    <Content />
   </div>
 </template>
 
 <script>
 
+import Content from "../components/Content";
 export default {
-  name: 'Home',
-}
+  name: "home",
+  components: {
+    Content
+  }
+};
 </script>
+
+<style lang="scss" scoped>
+.next-steps {
+  .fa-link {
+    margin-right: 5px;
+  }
+}
+</style>
