@@ -1,18 +1,17 @@
 <template>
   <div>
-    <Content />
+    <HomeContent />
   </div>
 </template>
 
 <script>
-
-import Content from "../components/Content";
+import HomeContent from '../components/HomeContent'
 export default {
-  name: "home",
+  name: 'home',
   components: {
-    Content
-  }
-};
+    HomeContent,
+  },
+}
 </script>
 
 <style lang="scss" scoped>

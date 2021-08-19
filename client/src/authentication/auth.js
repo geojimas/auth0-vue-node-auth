@@ -3,11 +3,11 @@ import { computed, reactive, watchEffect } from 'vue'
 
 let client
 const state = reactive({
-    loading: true,
-    isAuthenticated: false,
-    user: {},
-    popupOpen: false,
-    error: null,
+  loading: true,
+  isAuthenticated: false,
+  user: {},
+  popupOpen: true,
+  error: null,
 })
 
 /**
@@ -16,18 +16,18 @@ const state = reactive({
  * @param {Object} o
  */
 async function loginWithPopup() {
-    state.popupOpen = true
+  state.popupOpen = true
 
-    try {
-        await client.loginWithPopup(0)
-    } catch (e) {
-        console.error(e)
-    } finally {
-        state.popupOpen = false
-    }
+  try {
+    await client.loginWithPopup(0)
+  } catch (e) {
+    console.error(e)
+  } finally {
+    state.popupOpen = false
+  }
 
-    state.user = await client.getUser()
-    state.isAuthenticated = true
+  state.user = await client.getUser()
+  state.isAuthenticated = true
 }
 
 /**
@@ -36,17 +36,17 @@ async function loginWithPopup() {
  * @param {Object} o
  */
 async function handleRedirectCallback() {
-    state.loading = true
+  state.loading = true
 
-    try {
-        await client.handleRedirectCallback()
-        state.user = await client.getUser()
-        state.isAuthenticated = true
-    } catch (e) {
-        state.error = e
-    } finally {
-        state.loading = false
-    }
+  try {
+    await client.handleRedirectCallback()
+    state.user = await client.getUser()
+    state.isAuthenticated = true
+  } catch (e) {
+    state.error = e
+  } finally {
+    state.loading = false
+  }
 }
 
 /**
@@ -55,7 +55,7 @@ async function handleRedirectCallback() {
  * @param {Object} o
  */
 function loginWithRedirect(o) {
-    return client.loginWithRedirect(o)
+  return client.loginWithRedirect(o)
 }
 
 /**
@@ -64,7 +64,7 @@ function loginWithRedirect(o) {
  * @param {Object} o
  */
 function getIdTokenClaims(o) {
-    return client.getIdTokenClaims(o)
+  return client.getIdTokenClaims(o)
 }
 
 /**
@@ -73,8 +73,8 @@ function getIdTokenClaims(o) {
  *
  * @param {Object} o
  */
-function getTokenSilently(o) {
-    return client.getTokenSilently(o)
+export function getTokenSilently(o) {
+  return client.getTokenSilently(o)
 }
 
 /**
@@ -83,7 +83,7 @@ function getTokenSilently(o) {
  * @param {Object} o
  */
 function getTokenWithPopup(o) {
-    return client.getTokenWithPopup(o)
+  return client.getTokenWithPopup(o)
 }
 
 /**
@@ -92,20 +92,20 @@ function getTokenWithPopup(o) {
  * @param {Object} o
  */
 function logout(o) {
-    return client.logout(o)
+  return client.logout(o)
 }
 
 const authPlugin = {
-    isAuthenticated: computed(() => state.isAuthenticated),
-    loading: computed(() => state.loading),
-    user: computed(() => state.user),
-    getIdTokenClaims,
-    getTokenSilently,
-    getTokenWithPopup,
-    handleRedirectCallback,
-    loginWithRedirect,
-    loginWithPopup,
-    logout,
+  isAuthenticated: computed(() => state.isAuthenticated),
+  loading: computed(() => state.loading),
+  user: computed(() => state.user),
+  getIdTokenClaims,
+  getTokenSilently,
+  getTokenWithPopup,
+  handleRedirectCallback,
+  loginWithRedirect,
+  loginWithPopup,
+  logout,
 }
 
 /**
@@ -116,68 +116,68 @@ const authPlugin = {
  * @param {*} next
  */
 const routeGuard = (to, from, next) => {
-    const { isAuthenticated, loading, loginWithRedirect } = authPlugin
+  const { isAuthenticated, loading, loginWithRedirect } = authPlugin
 
-    const verify = () => {
-        // If the user is authenticated, continue with the route
-        if (isAuthenticated.value) {
-            return next()
-        }
-
-        // Otherwise, log in
-        loginWithRedirect({ appState: { targetUrl: to.fullPath } })
+  const verify = () => {
+    // If the user is authenticated, continue with the route
+    if (isAuthenticated.value) {
+      return next()
     }
 
-    // If loading has already finished, check our auth state using `fn()`
-    if (!loading.value) {
-        return verify()
-    }
+    // Otherwise, log in
+    loginWithRedirect({ appState: { targetUrl: to.fullPath } })
+  }
 
-    // Watch for the loading property to change before we check isAuthenticated
-    watchEffect(() => {
-        if (loading.value === false) {
-            return verify()
-        }
-    })
+  // If loading has already finished, check our auth state using `fn()`
+  if (!loading.value) {
+    return verify()
+  }
+
+  // Watch for the loading property to change before we check isAuthenticated
+  watchEffect(() => {
+    if (loading.value === false) {
+      return verify()
+    }
+  })
 }
 
 async function init(options) {
-    const { onRedirectCallback, redirectUri = window.location.origin } = options
+  const { onRedirectCallback, redirectUri = window.location.origin } = options
 
-    client = await createAuth0Client({
-        domain: process.env.VUE_APP_AUTH0_DOMAIN,
-        client_id: process.env.VUE_APP_AUTH0_CLIENT_KEY,
-        audience: options.audience,
-        redirect_uri: redirectUri,
-    })
+  client = await createAuth0Client({
+    domain: process.env.VUE_APP_AUTH0_DOMAIN,
+    client_id: process.env.VUE_APP_AUTH0_CLIENT_KEY,
+    audience: options.audience,
+    redirect_uri: redirectUri,
+  })
 
-    try {
-        // If the user is returning to the app after authentication
-        if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
-            // handle the redirect and retrieve tokens
-            const { appState } = await client.handleRedirectCallback()
+  try {
+    // If the user is returning to the app after authentication
+    if (window.location.search.includes('code=') && window.location.search.includes('state=')) {
+      // handle the redirect and retrieve tokens
+      const { appState } = await client.handleRedirectCallback()
 
-            // Notify subscribers that the redirect callback has happened, passing the appState
-            // (useful for retrieving any pre-authentication state)
-            onRedirectCallback(appState)
-        }
-    } catch (e) {
-        state.error = e
-    } finally {
-        // Initialize our internal authentication state
-        state.isAuthenticated = await client.isAuthenticated()
-        state.user = await client.getUser()
-        state.loading = false
+      // Notify subscribers that the redirect callback has happened, passing the appState
+      // (useful for retrieving any pre-authentication state)
+      onRedirectCallback(appState)
     }
+  } catch (e) {
+    state.error = e
+  } finally {
+    // Initialize our internal authentication state
+    state.isAuthenticated = await client.isAuthenticated()
+    state.user = await client.getUser()
+    state.loading = false
+  }
 
-    return {
-        install: app => {
-            app.provide('Auth', authPlugin)
-        },
-    }
+  return {
+    install: app => {
+      app.provide('Auth', authPlugin)
+    },
+  }
 }
 
 export default {
-    init,
-    routeGuard,
+  init,
+  routeGuard,
 }

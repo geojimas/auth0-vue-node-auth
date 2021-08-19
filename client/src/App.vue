@@ -18,12 +18,12 @@
 </template>
 
 <script>
-import Nav from "./components/Nav";
-import Error from "./components/Error";
+import Nav from './components/Nav'
+import Error from './components/Error'
 export default {
   components: {
     Nav,
-    Error
-  }
-};
+    Error,
+  },
+}
 </script>
