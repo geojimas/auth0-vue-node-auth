@@ -27,7 +27,6 @@ export default {
   setup() {
     const auth = inject('Auth')
 
-    console.log('AUTH', auth.user.value)
     return {
       ...auth,
     }

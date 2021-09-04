@@ -1,4 +1,3 @@
-
 const express = require('express')
 const router = express.Router()
 const { checkJwt } = require('../middlewares/jwt')
@@ -12,8 +11,7 @@ router.get('/events/:id', checkJwt, getEventById)
 
 // Home
 router.get('/', (req, res) => {
-    res.send('<h2>JWT Authentication with Auth0 Provider</h2>')
+  res.send('<h2>JWT Authentication with Auth0 Provider</h2>')
 })
-
 
 module.exports = router
