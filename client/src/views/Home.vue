@@ -6,6 +6,7 @@
 
 <script>
 import Content from '../components/Content'
+
 export default {
   name: 'home',
   components: {
@@ -13,11 +14,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss" scoped>
-.next-steps {
-  .fa-link {
-    margin-right: 5px;
-  }
-}
-</style>

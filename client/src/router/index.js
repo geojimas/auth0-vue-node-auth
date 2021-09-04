@@ -9,15 +9,16 @@ const routes = [
     component: Home,
   },
   {
-    path: '/about',
-    name: 'About',
-    component: () => import('../views/About.vue'),
-  },
-  {
     path: '/profile',
     name: 'Profile',
     beforeEnter: Auth.routeGuard,
     component: () => import('../views/Profile.vue'),
+  },
+  {
+    path: '/external',
+    name: 'External',
+    beforeEnter: Auth.routeGuard,
+    component: () => import('../views/External.vue'),
   },
 ]
 

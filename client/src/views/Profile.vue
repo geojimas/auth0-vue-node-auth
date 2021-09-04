@@ -9,13 +9,13 @@
         />
       </div>
       <div class="col-md text-center text-md-left">
-        <h2>{{ user.name }}</h2>
+        <h2>{{ user.nickname }}</h2>
         <p class="lead text-muted">{{ user.email }}</p>
       </div>
     </div>
 
     <div class="row">
-      {{ JSON.stringify(user, null, 2) }}
+      {{ user }}
     </div>
   </div>
 </template>
@@ -26,6 +26,8 @@ export default {
   name: 'Profile',
   setup() {
     const auth = inject('Auth')
+
+    console.log('AUTH', auth.user.value)
     return {
       ...auth,
     }

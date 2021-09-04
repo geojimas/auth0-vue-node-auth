@@ -73,7 +73,7 @@ function getIdTokenClaims(o) {
  *
  * @param {Object} o
  */
-export function getTokenSilently(o) {
+function getTokenSilently(o) {
   return client.getTokenSilently(o)
 }
 
@@ -147,7 +147,7 @@ async function init(options) {
   client = await createAuth0Client({
     domain: process.env.VUE_APP_AUTH0_DOMAIN,
     client_id: process.env.VUE_APP_AUTH0_CLIENT_KEY,
-    audience: options.audience,
+    audience: process.env.VUE_APP_AUDIENCE,
     redirect_uri: redirectUri,
   })
 

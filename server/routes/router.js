@@ -5,7 +5,7 @@ const { checkJwt } = require('../middlewares/jwt')
 const { getAllEvents, getEventById } = require('../controllers/EventController')
 
 // get all events
-router.get('/events', getAllEvents)
+router.get('/events', checkJwt, getAllEvents)
 
 // get event by id
 router.get('/events/:id', checkJwt, getEventById)

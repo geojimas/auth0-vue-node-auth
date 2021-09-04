@@ -1,120 +1,93 @@
 <template>
-  <div class="nav-container mb-3">
-    <nav class="navbar navbar-expand-md navbar-light bg-light">
-      <div class="container">
-        <div class="navbar-brand logo"></div>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <router-link to="/" class="nav-link">Home</router-link>
-            </li>
-          </ul>
-          <ul class="navbar-nav d-none d-md-block">
-            <li v-if="!isAuthenticated && !loading" class="nav-item">
-              <button id="qsLoginBtn" class="btn btn-primary btn-margin" @click.prevent="login">
-                Login
-              </button>
-            </li>
-
-            <li class="nav-item dropdown" v-if="isAuthenticated">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                id="profileDropDown"
-                data-toggle="dropdown"
-              >
-                <img
-                  :src="user.picture"
-                  alt="User's profile picture"
-                  class="nav-user-profile rounded-circle"
-                  width="50"
-                />
-              </a>
-              <div class="dropdown-menu dropdown-menu-right">
-                <div class="dropdown-header">{{ user.name }}</div>
-                <router-link to="/profile" class="dropdown-item dropdown-profile">
-                  Profile
-                </router-link>
-                <a id="qsLogoutBtn" href="#" class="dropdown-item" @click.prevent="logout">
-                  Log out
-                </a>
-              </div>
-            </li>
-          </ul>
-
-          <ul class="navbar-nav d-md-none" v-if="!isAuthenticated && !loading">
-            <button id="qsLoginBtn" class="btn btn-primary btn-block" @click.prevent="login2">
-              Login popup
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div v-if="isAuthenticated" class="me-auto mb-lg-0">
+          <!-- <img :src="user.picture" alt="User's profile picture" width="50" /> -->
+          <h5>{{ user.nickname }}</h5>
+          <h6>{{ user.email }}</h6>
+        </div>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <router-link class="nav-link" to="/">Home</router-link>
+          </li>
+        </ul>
+        <ul v-if="isAuthenticated" class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <router-link class="nav-link" to="/profile">Profile</router-link>
+          </li>
+        </ul>
+        <ul v-if="isAuthenticated" class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <router-link class="nav-link" to="/external">External API</router-link>
+          </li>
+        </ul>
+        <div class="d-flex" v-if="!isAuthenticated && !loading">
+          <div>
+            <button @click.prevent="loginWithPopup" class="btn btn-outline-success" type="submit">
+              Login with popup
             </button>
-          </ul>
-
-          <ul id="mobileAuthNavBar" class="navbar-nav d-md-none d-flex" v-if="isAuthenticated">
-            <li class="nav-item">
-              <span class="user-info">
-                <img
-                  :src="user.picture"
-                  alt="User's profile picture"
-                  class="nav-user-profile d-inline-block rounded-circle mr-3"
-                  width="50"
-                />
-                <h6 class="d-inline-block">{{ user.name }}</h6>
-              </span>
-            </li>
-            <li>
-              <router-link to="/profile">Profile</router-link>
-            </li>
-
-            <li>
-              <a id="qsLogoutBtn" href="#" class @click.prevent="logout">Log out</a>
-            </li>
-          </ul>
+          </div>
+          <div>
+            <button @click.prevent="login" class="btn btn-outline-success" type="submit">
+              Login
+            </button>
+          </div>
+        </div>
+        <div v-else>
+          <div>
+            <button @click.prevent="logout" class="btn btn-outline-danger" type="submit">
+              Logout
+            </button>
+          </div>
         </div>
       </div>
-    </nav>
-  </div>
+    </div>
+  </nav>
 </template>
 
 <script>
 import { inject } from 'vue'
+import { useRouter } from 'vue-router'
+
 export default {
   name: 'Nav',
-  inject: ['Auth'],
-  methods: {
-    login() {
-      this.Auth.loginWithRedirect()
-    },
-    login2() {
-      this.Auth.loginWithPopup()
-    },
-    logout() {
-      this.Auth.logout()
-      this.$router.push({ path: '/' })
-    },
-  },
   setup() {
+    const router = useRouter()
     const auth = inject('Auth')
+    //const userDetalis = computed(() => auth.user.data)
+
+    const login = () => {
+      auth.loginWithRedirect()
+    }
+
+    const loginWithPopup = () => {
+      auth.loginWithPopup()
+    }
+
+    const logout = () => {
+      auth.logout()
+      router.push({ path: '/' })
+    }
+
     return {
       ...auth,
+      login,
+      loginWithPopup,
+      logout,
+      //userDetalis
     }
   },
 }
 </script>
-
-<style>
-#mobileAuthNavBar {
-  min-height: 125px;
-  justify-content: space-between;
-}
-</style>
