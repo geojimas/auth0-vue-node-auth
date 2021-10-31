@@ -3,8 +3,7 @@
     <div class="mb-5">
       <h1>External API</h1>
       <p>
-        Call an external API using an access token, and the API will validate it using the API's
-        audience value.
+        This is Protected API. Only verified users have access to it.
       </p>
     </div>
 
@@ -48,6 +47,6 @@ export default {
       events,
       executed,
     }
-  }
+  },
 }
 </script>
