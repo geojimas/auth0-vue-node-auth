@@ -14,7 +14,7 @@ const checkJwt = jwt({
 
   // Validate the audience (Identifier) and the issuer (Domain).
   audience: `${process.env.AUDIENCE}`,
-  // issuer: `https://${process.env.DOMAIN}/`,
+  issuer: `https://${process.env.DOMAIN}/`,
   algorithms: ['RS256'],
 })
 
